@@ -16,10 +16,10 @@ Web Tier → Internal ALB → App Tier (Node.js) → RDS
 
 ## What this folder contains
 
-- Node.js backend code
-- TransactionService.js
-- DbConfig.js (RDS connection)
-- index.js (main start file)
+    - Node.js backend code
+    - TransactionService.js
+    - DbConfig.js (RDS connection)
+    - index.js (main start file)
 
 ---
 
@@ -30,52 +30,63 @@ Your **App Tier EC2 instance** is added to:
 - **Target Group:** `app-tier-tg`
 - **Connected to:** Internal Application Load Balancer
 
+
+
 DbConfig.js
-  Update it with your RDS details:
 
-  module.exports = Object.freeze({
-    DB_HOST : "<YOUR_RDS_ENDPOINT>",
-    DB_USER : "admin",
-    DB_PWD  : "yourpassword",
-    DB_DATABASE : "webappdb",
-    DB_PORT : 3306
-  });
-Security Group rule in RDS:
+      Update it with your RDS details:
+    
+        module.exports = Object.freeze({
+          DB_HOST : "<YOUR_RDS_ENDPOINT>",
+          DB_USER : "admin",
+          DB_PWD  : "yourpassword",
+          DB_DATABASE : "webappdb",
+          DB_PORT : 3306
+        });
+    
+    
+  Security Group rule in RDS:
 
-  ✅ Allow MySQL (3306) only from App Tier Security Group
+      ✅ Allow MySQL (3306) only from App Tier Security Group
 
 Steps to use this folder on App Tier EC2
 
-1. Install Node.js, Git and PM2
+   1. Install Node.js, Git and PM2
 
-  curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
-  sudo yum install nodejs git -y
-  sudo npm install pm2 -g
+    curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
+    sudo yum install nodejs git -y
+    sudo npm install pm2 -g
 
 
   
 2. Clone your GitHub repo
 
-  cd /home/ec2-user
-  git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-  cd YOUR_REPO_NAME/backend/app-tier
+        cd /home/ec2-user
+        git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+        cd YOUR_REPO_NAME/backend/app-tier
 
   
+
 3. Install dependencies
-  npm install
+
+        npm install
+
+
 
 
 4. Start app using PM2
 
-  pm2 start index.js --name app-tier
-  pm2 save
-  pm2 status
+        pm2 start index.js --name app-tier
+        pm2 save
+        pm2 status
+
+
 
 
 5. Test locally
 
-  curl http://localhost:3001
-  If the app is running, you will see a response.
+        curl http://localhost:3001
+        If the app is running, you will see a response.
 
 6. Add instance to Internal ALB Target Group
 

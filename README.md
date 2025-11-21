@@ -33,6 +33,9 @@ This design ensures:
 ✅ Fault tolerance
 
 📁 Repository Structure
+
+
+
 three-tier-aws-custom-repo/
 │
 ├── frontend/
@@ -53,17 +56,20 @@ three-tier-aws-custom-repo/
 🔹 Detailed Web Tier steps: frontend/web-tier/README.md
 🔹 Detailed App Tier steps: backend/app-tier/README.md
 
+
+
+
 🛠️ Technology Stack
 
-Cloud Provider: AWS
+    Cloud Provider: AWS
 
-Compute: Amazon EC2
+    Compute: Amazon EC2
 
-Load Balancer: Application Load Balancer (Public & Internal)
+    Load Balancer: Application Load Balancer (Public & Internal)
 
-Scaling: Auto Scaling Groups
+    Scaling: Auto Scaling Groups
 
-Database: Amazon RDS (MySQL)
+    Database: Amazon RDS (MySQL)
 
 Web Server: Nginx
 

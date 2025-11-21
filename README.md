@@ -1,64 +1,219 @@
-# Three-Tier AWS Web Application – Custom Implementation
+🚀 Three-Tier Web Application on AWS
 
-This repository is my custom implementation of a **three-tier web application on AWS**, inspired by the official AWS workshop:
+This repository contains my custom implementation of a production-ready three-tier architecture on AWS, inspired by the AWS Three-Tier Web Architecture Workshop.
 
-> Original source: `aws-samples/aws-three-tier-web-architecture-workshop`
+The project is structured and deployed in a way that anyone can recreate the same architecture using the code and steps provided here.
 
-I used the workshop code as a base and reorganised it into a simpler, portfolio-friendly layout with three main folders: **frontend**, **backend**, and **db**.
+📌 Architecture Overview
 
-## 📁 Project Structure
+Request Flow:
 
-```text
-frontend/
-  └── web-tier/      # React app & web-tier config
+Internet
+⬇
+Public Application Load Balancer (ALB)
+⬇
+Web Tier Auto Scaling Group (EC2 – Nginx + React)
+⬇ /api
+Internal Application Load Balancer
+⬇
+App Tier Auto Scaling Group (EC2 – Node.js + PM2)
+⬇
+Amazon RDS (MySQL)
 
-backend/
-  └── app-tier/      # Node.js backend (TransactionService, DbConfig, etc.)
+This design ensures:
 
-db/
-  └── README.md      # Notes / space for DB scripts (RDS MySQL)
-```
+✅ High Availability
 
-- **Frontend**: React single-page application that talks to the backend via `/api/...`.
-- **Backend**: Node.js + Express/PM2 service that connects to an Amazon RDS MySQL database.
-- **Database**: RDS MySQL deployed in a private subnet, accessed only by the app tier.
+✅ Scalability
 
-## 🚀 High-Level Architecture
+✅ Secure network isolation
 
-- **Public ALB** → routes internet traffic to Web Tier (Auto Scaling Group).
-- **Web Tier (Nginx + React)** → serves frontend and proxies `/api` to Internal ALB.
-- **Internal ALB** → load balances requests to App Tier (Auto Scaling Group).
-- **App Tier (Node.js + PM2)** → handles business logic and DB queries.
-- **Amazon RDS MySQL** → persistent data storage, reachable only from App Tier security group.
+✅ Load balancing
 
-## 🔧 Running Locally (Dev)
+✅ Fault tolerance
 
-### Frontend
+📁 Repository Structure
+three-tier-aws-custom-repo/
+│
+├── frontend/
+│   └── web-tier/       → React + Nginx
+│
+├── backend/
+│   └── app-tier/        → Node.js + PM2
+│
+├── db/                  → Database notes / scripts
+│
+├── docs/
+│   └── DEPLOYMENT_GUIDE.md
+│
+├── .gitignore
+└── README.md             → You are here
 
-```bash
-cd frontend/web-tier
-npm install
-npm start        # or npm run build && serve -s build
-```
 
-### Backend
+🔹 Detailed Web Tier steps: frontend/web-tier/README.md
+🔹 Detailed App Tier steps: backend/app-tier/README.md
 
-```bash
-cd backend/app-tier
-npm install
+🛠️ Technology Stack
 
-# configure DbConfig.js or .env for your local / RDS database
-pm2 start index.js --name app-tier
-```
+Cloud Provider: AWS
 
-## ☁️ Deployment Notes (AWS)
+Compute: Amazon EC2
 
-In AWS, I deployed this using:
+Load Balancer: Application Load Balancer (Public & Internal)
 
-- VPC with public and private subnets.
-- Public ALB in public subnets → Web Tier Auto Scaling Group.
-- Internal ALB in private subnets → App Tier Auto Scaling Group.
-- RDS MySQL in private subnets.
-- Security groups to tightly control traffic between each tier.
+Scaling: Auto Scaling Groups
 
-This repo is **execution-ready** as a code base and can be connected to any AWS infrastructure that follows the above pattern.
+Database: Amazon RDS (MySQL)
+
+Web Server: Nginx
+
+Backend: Node.js + Express + PM2
+
+Frontend: React
+
+OS: Amazon Linux 2
+
+Network: VPC, Subnets, Route Tables, IGW, NAT Gateway
+
+🌐 Network Architecture
+VPC
+
+CIDR: 10.0.0.0/16
+
+Subnets
+
+Public Subnets:
+
+public-subnet-1 → 10.0.1.0/24
+
+public-subnet-2 → 10.0.2.0/24
+
+Private Subnets:
+
+private-subnet-1 → 10.0.3.0/24
+
+private-subnet-2 → 10.0.4.0/24
+
+Gateways
+
+Internet Gateway (IGW) – for public subnet access
+
+NAT Gateway – for private subnet outbound access
+
+Route Tables
+
+Public Route Table:
+0.0.0.0/0 → Internet Gateway
+
+Private Route Table:
+0.0.0.0/0 → NAT Gateway
+
+🔐 Security Groups
+Security Group	Purpose	Inbound Rules
+sg-public-alb	For Public ALB	HTTP 80 from 0.0.0.0/0
+sg-web-tier	For Web Tier EC2	HTTP 80 from sg-public-alb
+sg-internal-alb	For Internal ALB	HTTP 80 from sg-web-tier
+sg-app-tier	For App Tier EC2	TCP 3001 from sg-internal-alb
+sg-rds	For RDS	MySQL 3306 from sg-app-tier
+
+This enforces strict layer-to-layer access only.
+
+🗄️ Database Configuration
+
+Type: Amazon RDS (MySQL)
+
+DB Name: webappdb
+
+Placed in: Private Subnets
+
+Public Access: ❌ Disabled
+
+Access allowed only from App Tier SG
+
+In backend/app-tier/DbConfig.js:
+
+DB_HOST = <YOUR_RDS_ENDPOINT>
+DB_USER = admin
+DB_PWD = your_password
+DB_DATABASE = webappdb
+DB_PORT = 3306
+
+⚙️ Auto Scaling Setup
+Web Tier ASG
+
+Subnets: public-subnet-1 & public-subnet-2
+
+Target Group: web-tier-tg
+
+Desired: 2
+
+Min: 2
+
+Max: 4
+
+App Tier ASG
+
+Subnets: private-subnet-1 & private-subnet-2
+
+Target Group: app-tier-tg
+
+Desired: 2
+
+Min: 2
+
+Max: 4
+
+Both include:
+
+Health checks
+
+Self-healing
+
+High Availability
+
+✅ How To Deploy
+
+Follow these in order:
+
+Create VPC
+
+Create Public & Private Subnets
+
+Attach Internet Gateway
+
+Create NAT Gateway
+
+Configure Route Tables
+
+Create Security Groups
+
+Create RDS & Subnet Group
+
+Create Target Groups
+
+Create Public & Internal ALB
+
+Create Launch Templates
+
+Create Auto Scaling Groups
+
+For EC2 configuration:
+
+Web Tier instructions → frontend/web-tier/README.md
+
+App Tier instructions → backend/app-tier/README.md
+
+✅ Final Test
+
+Once everything is healthy:
+
+Go to EC2 → Load Balancers
+
+Copy Public ALB DNS Name
+
+Open in browser:
+
+http://<PUBLIC_ALB_DNS>
+
+
+✅ Your application should load successfully.

@@ -4,6 +4,8 @@ This repository contains my custom implementation of a production-ready three-ti
 
 The project is structured and deployed in a way that anyone can recreate the same architecture using the code and steps provided here.
 
+<img width="1024" height="1536" alt="ChatGPT Image Nov 21, 2025, 04_00_10 PM" src="https://github.com/user-attachments/assets/6691068e-dba7-4336-a199-5e16705843fe" />
+
 📌 Architecture Overview
 
 Request Flow:
@@ -199,6 +201,7 @@ Both include:
     Health checks
 
     Self-healing
+
 
 
 

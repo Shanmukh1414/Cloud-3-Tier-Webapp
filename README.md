@@ -223,3 +223,6 @@ Once everything is healthy:
 
 
 ✅ Your application should load successfully.
+
+<img width="1920" height="1080" alt="Screenshot 2025-11-21 155352" src="https://github.com/user-attachments/assets/87b1580a-8286-493c-ab31-4a9dddb961ec" />
+
